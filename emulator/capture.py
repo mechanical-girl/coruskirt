@@ -2,8 +2,6 @@ import time
 import json
 start_time = time.time()
 
-print("hello, world")
-
 capture_data = []
 
 class NeoPixel:
@@ -20,6 +18,7 @@ class NeoPixel:
 
     def write(self):
         for i, val in enumerate(self.values):
+            print(f'{time.time()-start_time} {self.name} {i} {val[0]} {val[1]} {val[2]}', flush=True)
             with open("output.json", 'w') as f:
                 this_step = [time.time()-start_time, self.name, i, val]
                 capture_data.append(this_step)
