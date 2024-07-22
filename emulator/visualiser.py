@@ -1,4 +1,7 @@
+import cairo
+import time
 import pygame
+import math
 import sys
 
 np0 = [(90,30), (10,50), (0,0)]
@@ -6,50 +9,47 @@ np2 = [(25,100), (240, 10), (290, 25)]
 np4 = [(180,80), (90, 85), (45, 95)]
 np6 = [(160, 45), (200,40), (310, 45)]
 
-running = True
-pygame.init()
-screen = pygame.display.set_mode((1820,520))
-screen.fill((0, 0, 0))
-clock = pygame.time.Clock()
-FPS = 60
-
 pixels = np0+np2+np4+np6
 
-pygame.display.update()
+WIDTH, HEIGHT = 1820, 520
 
+surface = cairo.ImageSurface(cairo.FORMAT_RGB24, WIDTH, HEIGHT)
+ctx = cairo.Context(surface)
+ctx.scale(WIDTH, HEIGHT)
 
-try:
-    while True:
-        for line in sys.stdin:
-            splitline = line.rstrip("\n").split()
-            pin = int(splitline[1])
-            index = int(splitline[2])
-            r = int(splitline[3])
-            g = int(splitline[4])
-            b = int(splitline[5])
-            print(f"{pin}[{index}] ({r},{g},{b})", flush=True)
-            if pin == 0:
-                coords = np0[index]
-            elif pin == 2:
-                coords= np2[index]
-            elif pin == 4:
-                coords = np4[index]
-            else:
-                coords = np6[index]
+pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.get_surface()
 
-            x = coords[0]*5+10
-            y = coords[1]*5+10
+while True:
+    for line in sys.stdin:
+        splitline = line.rstrip("\n").split()
+        pin = int(splitline[1])
+        index = int(splitline[2])
+        r = int(splitline[3])/255
+        g = int(splitline[4])/255
+        b = int(splitline[5])/255
+        print(f"{pin}[{index}] ({r},{g},{b})", flush=True)
+        if pin == 0:
+            coords = np0[index]
+        elif pin == 2:
+            coords= np2[index]
+        elif pin == 4:
+            coords = np4[index]
+        else:
+            coords = np6[index]
 
-            pygame.draw.circle(screen, (r, g, b), (x, y), 10)
+        x = coords[0]*5+10
+        y = coords[1]*5+10
 
-        pygame.display.update()
-        clock.tick(FPS)
+        ctx.arc(x, y, 10, 0, 2*math.pi)
+        ctx.set_source_rgb(r, g, b)
+        ctx.fill()
 
-        for event in pygame.event.get():
-           if event.type == pygame.QUIT:
-               pygame.quit()
-               sys.exit()
+    buf = surface.get_dataa()
+    image = pygame.image.frombuffer(buf, (WIDTH, HEIGHT), "RGB")
 
-except KeyboardInterrupt:
-    pygame.quit()
-    sys.exit()
+    screen.blit(image, (0,0))
+    pygame.diplay.flip()
+
+    pygame.event.get()
+    time.sleep(0.1)
