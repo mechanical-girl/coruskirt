@@ -3,7 +3,7 @@ import emulator.machine as machine
 import emulator.capture as neopixel
 #import neopixel
 import time
-#from ripple import ripple
+from ripple import ripple
 
 #sleeptime = 1000
 sleeptime = 1
@@ -13,7 +13,7 @@ np2 = neopixel.NeoPixel(machine.Pin(2), 3)
 np4 = neopixel.NeoPixel(machine.Pin(4), 3)
 np6 = neopixel.NeoPixel(machine.Pin(6), 3)
 
-#ripple((255,255,255), np0, np2, np4, np6)
+ripple((255,255,255), np0, np2, np4, np6)
 
 red = (255, 0, 0)
 green = (0, 255, 0)
