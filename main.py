@@ -1,7 +1,7 @@
-import machine
-#import emulator.machine as machine
-#import emulator.capture as neopixel
-import neopixel
+#import machine
+import emulator.machine as machine
+import emulator.capture as neopixel
+#import neopixel
 import time
 #import ripple
 #import sweep
@@ -32,10 +32,14 @@ colours = [blue, pink, white, pink, blue]
 num_of_nps = 4
 pix_per_np = 3
 
+pixel_colours = [[0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+
 
 for i in range(num_of_nps):
     for j in range(pix_per_np):
-        nps[i][j] = random.choice(colours)
+        this_choice = random.choice(colours)
+        pixel_colours[i][j] = this_choice
+        nps[i][j] = this_choice
 
 np0.write()
 np2.write()
@@ -43,8 +47,30 @@ np4.write()
 np6.write()
 
 while True:
-    target = [random.randint(0, num_of_nps-1), random.randint(0, pix_per_np-1)]
+    i = random.randint(0, num_of_nps -1)
+    j = random.randint(0, pix_per_np -1)
+    this_choice = random.choice(colours)
 
-    nps[target[0]][target[1]] = random.choice(colours)
-    nps[target[0]].write()
-    time.sleep(500)
+    while this_choice == pixel_colours[i][j]:
+        this_choice = random.choice(colours)
+
+    transition = []
+    current_colour = pixel_colours[i][j]
+    for pct in range(5):
+        shade = []
+        for c in range(len(current_colour)):
+            shade.append(int(current_colour[c]*((100-(20*pct))/100)))
+        transition.append(shade)
+
+    for pct in range(5):
+        shade = []
+        for c in range(len(this_choice)):
+            shade.append(int(this_choice[c]*((20*pct)/100)))
+        transition.append(shade)
+
+    for shade in transition:
+        nps[i][j] = shade
+        nps[i].write()
+        time.sleep(50)
+
+    pixel_colours[i][j] = this_choice
