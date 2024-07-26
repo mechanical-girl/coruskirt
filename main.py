@@ -1,7 +1,7 @@
-#import machine
-import emulator.machine as machine
-import emulator.capture as neopixel
-#import neopixel
+import machine
+#import emulator.machine as machine
+#import emulator.capture as neopixel
+import neopixel
 import time
 #import ripple
 #import sweep
